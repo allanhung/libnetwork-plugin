@@ -175,7 +175,9 @@ def join():
 
     network_id = json_data["NetworkID"]
     network_data = client.get_network(network_id)
-    ipv4_gateway = str(IPNetwork(network_data['IPv4Data'][0]['Gateway']).ip) if "IPv4Data" in network_data.keys() else ""
+    ipv4_gateway = ""
+    if network_data and "IPv4Data" in network_data.keys():
+        ipv4_gateway = str(IPNetwork(network_data['IPv4Data'][0]['Gateway']).ip)
 
     # The host interface name matches the name given when creating the endpoint
     # during CreateEndpoint

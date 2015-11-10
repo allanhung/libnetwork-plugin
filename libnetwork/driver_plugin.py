@@ -173,6 +173,11 @@ def join():
     endpoint_id = json_data["EndpointID"]
     app.logger.info("Joining endpoint %s", endpoint_id)
 
+    network_id = json_data["NetworkID"]
+    network_data = client.get_network(network_id)
+    gateway_net = IPNetwork(network_data['IPv4Data'][0]['Gateway'])
+    ipv4_gateway = str(gateway_net.ip)
+
     # The host interface name matches the name given when creating the endpoint
     # during CreateEndpoint
     host_interface_name = generate_cali_interface_name(IF_PREFIX, endpoint_id)
@@ -198,7 +203,7 @@ def join():
             "SrcName": temp_interface_name,
             "DstPrefix": IF_PREFIX
         },
-        "Gateway": "",  # Leave gateway empty to trigger auto-gateway behaviour
+        "Gateway": ipv4_gateway,  # Leave gateway empty to trigger auto-gateway behaviour
     }
 
     app.logger.debug("Join Response JSON=%s", return_json)
